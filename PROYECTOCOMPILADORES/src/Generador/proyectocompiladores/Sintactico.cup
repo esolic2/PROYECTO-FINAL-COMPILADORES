@@ -1,0 +1,166 @@
+package proyecto_final;
+
+import java_cup.runtime.Symbol;
+
+parser code
+{:
+    public String resultado="";
+    private Symbol s;
+     
+    public void syntax_error(Symbol s){
+        this.s = s;
+        
+    }
+
+    public Symbol getS(){
+        return this.s;
+}
+:};
+
+terminal  Apertura_Documento, Cierre_Documento,Apertura_Encabezado,Cierre_Encabezado,Apertura_Cuerpo,Fin_Cuerpo;
+terminal Titulo,Cadena, Email,Igual,Suma,Resta,Apertura_Tabla,Apertura_Fila,Apertura_Columna, Cierre_Tabla,Apertura_Imagen,Cierre_Imagen;
+terminal Fin_Fila, Parentesis_Apertura,Parentesis_Cierre, Multiplicar,Punto,Numero,Lista_Entrada,Lista_Fin,Imprimir,Punto_y_Coma, Link,Diagonal,Formato_Imagen,Comillas,Dos_Puntos,Negrilla,Parrafo,Variable,Separador,Nombre,ERROR;
+non terminal   String INICIO, E;
+
+
+
+
+
+start with INICIO;
+
+
+INICIO     ::=  E | E INICIO ;
+
+E   ::=     Apertura_Documento  Apertura_Encabezado {: String a = "<html>\n "+ "<link " +"rel="+"\"icon\" "+" href=" +"\"C:/Users/SC/Documents/NetBeansProjects/PROYECTOCOMPILADORES/src/Imagenes/umg.png\""+" type= "+ "\"image/png\""+ "/>\n <center><h1>PROYECTO COMPILADORES</h1></center>\n"+ 
+                                "<head>\n"+ 
+                                " <style>\n" +
+                                "table, th, td{\n"+	
+                                "border : 1px solid white;}\n </style>\n";
+                                 resultado += String.valueOf(a);
+                             :}
+    |       Titulo Igual Comillas Cadena:b Comillas  {:String a = "<title>"+b+"\n"+"</title>\n";
+                                 resultado+= String.valueOf(a); 
+                             :}         
+    |       Cierre_Encabezado {:String a="</head>\n";
+                                resultado+= String.valueOf(a);
+                             :}
+    |       Apertura_Cuerpo  {:  String a ="<body background="+"\"C:/Users/SC/Documents/NetBeansProjects/PROYECTOCOMPILADORES/src/Imagenes/fondo.jpg\""+">\n";
+                                  resultado += String.valueOf(a);
+                             :}
+     |      Apertura_Tabla {: String a ="<table  style ="+ "width: 100%>\n";
+                                  resultado += String.valueOf(a);
+                             :}
+     |     Cadena  {:String a= "<tr>\n";
+                            resultado += String.valueOf(a);
+                            :}
+
+     |      Apertura_Columna   Comillas Cadena:b Comillas  {:String a = "<th>"+b+"</th>\n";
+                                  resultado += String.valueOf(a);
+                              :}
+     |      Fin_Fila {:String a = "</tr>";
+                                  resultado += String.valueOf(a);
+                              :}
+    
+     |       Apertura_Columna  Comillas Numero:b Comillas  Apertura_Columna Comillas Cadena:c Comillas  Apertura_Columna Comillas Cadena:d Comillas Apertura_Columna Comillas Numero:e Multiplicar:f Numero:g Comillas Apertura_Columna Comillas Email:h Comillas Apertura_Columna Apertura_Imagen Cadena Cierre_Imagen Fin_Fila {: 
+                                String a = "<td>"+b+"</td>\n <td>"+c+"</td>\n <td>"+d+"</td>\n <td>"+e+f+g+"</td>\n <td>"+h+"</td>\n <td> <img src="+"\"C:/Users/wilbe/Desktop/7semestre/COMPILADOR/Proyecto_Final/src/Imagenes/umg.png\""+ "style="+"\"width:75px;height:75px;\""+"></td>\n </tr>";
+                                resultado +=String.valueOf(a);
+                             :}
+     |      Apertura_Columna  Comillas Numero:b Comillas  Apertura_Columna Comillas Cadena:c Comillas  Apertura_Columna Comillas Cadena:d Comillas Apertura_Columna Comillas Parentesis_Apertura:f Numero:e Suma:g Numero:h Parentesis_Cierre:i Multiplicar:j Numero:k Punto:l Numero:m Comillas Apertura_Columna Comillas Email:n Comillas Fin_Fila{:
+                                String a = " <td>"+b+"</td>\n <td>"+c+"</td>\n <td>" +d+"</td>\n <td>"+f+e+g+h+i+j+k+l+m+"</td>\n <td>"+n+"</td>\n </tr>\n";
+                                 resultado +=String.valueOf(a);
+                              :}
+     |      Apertura_Columna  Comillas Numero:b Comillas  Apertura_Columna Comillas Cadena:c Comillas  Apertura_Columna Comillas Cadena:d Comillas Apertura_Columna Comillas Numero:e Resta:f Numero:g  Comillas Apertura_Columna Comillas Email:h Comillas Fin_Fila Cierre_Tabla{:
+                                String a = " <td>"+b+"</td>\n <td>"+c+"</td>\n <td>" +d+"</td>\n <td>"+e+f+g+"</td>\n <td>"+h+"</td>\n </tr>\n </table>\n";
+                                 resultado +=String.valueOf(a);
+                              :} 
+     |      Parrafo            {:String a= " <p>\n";
+                               resultado +=String.valueOf(a);
+                              :}
+
+     |                          Negrilla {:String a= " <br>\n <b>";
+                               resultado +=String.valueOf(a);
+                              :}
+
+     |                        Parentesis_Apertura:b Cadena:c Parentesis_Cierre:d   {:
+                                String a =  ""+b+c+d +"</b> <br>\n";
+                                resultado +=String.valueOf(a);
+                               :}
+     |                        Parentesis_Apertura:b Numero:c Parentesis_Cierre:d   {:
+                                String a = ""+b+c+d +"</b> <br>\n ";
+                                resultado +=String.valueOf(a);
+                               :}
+     |      Variable           {:String a = "A";
+                                resultado +=String.valueOf(a);
+                                :}
+
+     |                          Numero:b Suma:c Numero:d Punto_y_Coma {:
+                               String a= "<script type="+"\"text/javascript\""+">\n"+ 
+                                         "function Sumar()\n"+
+                                         "{\n"+ 
+                                         "var n1=0;\n"+
+                                         "var n2=0;\n"+ 
+                                         "var resultado=0;\n"+ 
+                                         "n1 = parseInt("+b+");\n"+
+                                         "n2 = parseInt("+d+");\n"+ 
+                                         "A= n1"+c+"n2;\n"+
+                               "alert("+
+                               "\"La suma de los numeros\""+ 
+                               "+ n1 +"+ 
+                               "\"mas\""+
+                              "+ n2+"+ "\"es =\""+ "+A);}\n </script>\n";
+                               resultado+=String.valueOf(a);
+                                :}
+      |     Imprimir  Parentesis_Apertura Variable Parentesis_Cierre      {: 
+                               String a = "<button type="+"\"button\""+ "onclick ="+"\"Sumar()\""+">Suma de dos Numeros </button>\n";
+                               resultado +=String.valueOf(a);
+                                :}
+
+      |       Apertura_Columna  Comillas Numero:b Comillas  Apertura_Columna Comillas Cadena:c Comillas  Apertura_Columna Comillas Cadena:d Comillas Apertura_Columna Comillas Numero:e Multiplicar:f Numero:g Comillas Apertura_Columna Comillas Email:h Comillas Fin_Fila   {: 
+                                String a = "<td>"+b+"</td>\n <td>"+c+"</td>\n <td>"+d+"</td>\n <td>"+e+f+g+"</td>\n <td>"+h+"</td>\n </tr>";
+                                resultado +=String.valueOf(a);
+                                  :}
+      |       Lista_Entrada  Cadena:b Cadena:c Cadena:d Cadena:e  {:
+                                String a = "<ul>\n <li> "+b+" </li>\n"+
+                                           "<li> "+c+" </li>\n"+
+                                           "<li> "+d+" </li>\n"+
+                                           "<li> "+e+" </li>\n";
+                                resultado +=String.valueOf(a);
+                                :}
+      |       Lista_Fin         {:
+                                String a ="</ul>\n";
+                                resultado +=String.valueOf(a);
+                                :}
+      |       Link              {:String a= "<p>\n <a href=";
+                                resultado +=String.valueOf(a);
+                                :}
+
+      |       Comillas Cadena:b Punto:c Cadena:d Punto:e Cadena:f Comillas   {:
+                                String a= "https://"+b+c+d+e+f+">Ingresa a Google</a>\n </p>\n";
+                                resultado +=String.valueOf(a);
+                                :}
+      |       Apertura_Imagen Nombre Comillas:b Cadena:c Comillas:d Link Comillas:e Cadena:f Punto:g Cadena:h Punto:i Cadena:j Diagonal:l Cadena:m  Formato_Imagen:o Comillas:k Cadena Dos_Puntos Numero Cadena Dos_Puntos Numero Cierre_Imagen {:
+                                      String a= ""+b+c+d+"<a href="+e+f+g+h+i+j+l+m+o+k+"style="+"\"width:150;height:100px;\""+">\n </img>\n";
+                                      resultado +=String.valueOf(a);
+                                      :}
+      |         Fin_Cuerpo      {:String a="</body>\n";
+                                  resultado +=String.valueOf(a);
+                                 :}
+      |         Cierre_Documento  {:String a="</html>";
+                                    resultado +=String.valueOf(a);
+                                   :}
+                          
+;
+
+
+
+
+
+
+              
+
+
+
+
+
+
+
